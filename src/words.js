@@ -1,0 +1,88 @@
+// Lista de palabras para el juego IMPOSTOR
+// Puedes agregar, eliminar o modificar palabras fácilmente aquí
+
+const words = [
+    // Animales
+    "GATO", "PERRO", "ELEFANTE", "LEÓN", "TIGRE", "OSO", "LOBO", "ZORRO",
+    "ÁGUILA", "BÚHO", "PINGÜINO", "DELFÍN", "BALLENA", "TIBURÓN", "PULPO",
+    "SERPIENTE", "COCODRILO", "TORTUGA", "CONEJO", "ARDILLA", "PANDA",
+    "JIRAFA", "CEBRA", "RINOCERONTE", "HIPOPÓTAMO", "KOALA", "CANGURO",
+
+    // Comida
+    "PIZZA", "HAMBURGUESA", "TACO", "SUSHI", "PASTA", "PAELLA", "RAMEN",
+    "BURRITO", "CROISSANT", "DONUT", "HELADO", "CHOCOLATE", "GALLETA",
+    "MANZANA", "BANANA", "FRESA", "SANDÍA", "PIÑA", "MANGO", "UVA",
+    "CAFÉ", "TÉ", "JUGO", "LIMONADA", "BATIDO", "CERVEZA", "VINO",
+
+    // Lugares
+    "PLAYA", "MONTAÑA", "BOSQUE", "DESIERTO", "VOLCÁN", "ISLA", "RÍO",
+    "LAGO", "CASCADA", "CUEVA", "SELVA", "PRADERA", "GLACIAR", "PANTANO",
+    "CIUDAD", "PUEBLO", "ALDEA", "METRÓPOLIS", "PUERTO", "AEROPUERTO",
+    "ESCUELA", "HOSPITAL", "MUSEO", "TEATRO", "CINE", "BIBLIOTECA",
+    "PARQUE", "ESTADIO", "GIMNASIO", "RESTAURANTE", "CAFETERÍA", "HOTEL",
+
+    // Objetos
+    "GUITARRA", "PIANO", "BATERÍA", "VIOLÍN", "FLAUTA", "TROMPETA",
+    "LIBRO", "REVISTA", "PERIÓDICO", "CUADERNO", "LÁPIZ", "BOLÍGRAFO",
+    "TELÉFONO", "COMPUTADORA", "TABLET", "RELOJ", "CÁMARA", "TELEVISOR",
+    "ESPEJO", "LÁMPARA", "VELA", "ALMOHADA", "MANTA", "SOFÁ", "MESA",
+    "SILLA", "CAMA", "ARMARIO", "REFRIGERADOR", "ESTUFA", "MICROONDAS",
+    "BICICLETA", "PATINETA", "PATINES", "PELOTA", "RAQUETA", "BALÓN",
+
+    // Naturaleza
+    "SOL", "LUNA", "ESTRELLA", "COMETA", "PLANETA", "GALAXIA", "NEBULOSA",
+    "ÁRBOL", "FLOR", "ROSA", "TULIPÁN", "GIRASOL", "ORQUÍDEA", "CACTUS",
+    "NUBE", "LLUVIA", "NIEVE", "TRUENO", "RELÁMPAGO", "ARCOÍRIS", "TORNADO",
+    "OCÉANO", "MAR", "OLA", "MAREA", "CORAL", "ARENA", "ROCA", "CRISTAL",
+
+    // Profesiones
+    "DOCTOR", "ENFERMERO", "MAESTRO", "BOMBERO", "POLICÍA", "CHEF",
+    "PILOTO", "MARINERO", "SOLDADO", "CIENTÍFICO", "INGENIERO", "ARTISTA",
+    "MÚSICO", "ACTOR", "DEPORTISTA", "ESCRITOR", "PERIODISTA", "FOTÓGRAFO",
+
+    // Transportes
+    "CARRO", "AUTOBÚS", "TREN", "AVIÓN", "BARCO", "SUBMARINO", "COHETE",
+    "HELICÓPTERO", "MOTOCICLETA", "CAMIÓN", "TAXI", "AMBULANCIA", "GLOBO",
+
+    // Fantasía y Ficción
+    "DRAGÓN", "UNICORNIO", "FÉNIX", "PEGASO", "GRIFO", "CENTAURO",
+    "VAMPIRO", "HOMBRE LOBO", "ZOMBI", "MOMIA", "FANTASMA", "BRUJA",
+    "MAGO", "HADA", "DUENDE", "OGRO", "TROLL", "SIRENA", "KRAKEN",
+    "ROBOT", "CYBORG", "ALIEN", "MUTANTE", "SUPERHÉROE", "VILLANO",
+
+    // Objetos Mágicos/Especiales
+    "ESPADA", "ESCUDO", "ARCO", "FLECHA", "LANZA", "MARTILLO", "HACHA",
+    "VARITA", "BÁCULO", "GRIMORIO", "PERGAMINO", "POCIÓN", "ELIXIR",
+    "CASTILLO", "TORRE", "MAZMORRA", "FORTALEZA", "TEMPLO", "RUINAS",
+    "TESORO", "COFRE", "MAPA", "BRÚJULA", "CORONA", "CETRO", "AMULETO",
+    "DIAMANTE", "RUBÍ", "ESMERALDA", "ZAFIRO", "PERLA", "ORO", "PLATA",
+
+    // Conceptos Abstractos
+    "AMOR", "AMISTAD", "VALENTÍA", "HONOR", "JUSTICIA", "LIBERTAD",
+    "PAZ", "GUERRA", "VICTORIA", "DERROTA", "ESPERANZA", "MIEDO",
+    "ALEGRÍA", "TRISTEZA", "ENOJO", "SORPRESA", "CONFUSIÓN", "SABIDURÍA",
+
+    // Tecnología
+    "INTERNET", "WIFI", "BLUETOOTH", "CÓDIGO", "PROGRAMA", "APLICACIÓN",
+    "VIDEOJUEGO", "CONSOLA", "JOYSTICK", "TECLADO", "RATÓN", "PANTALLA",
+    "HOLOGRAMA", "LÁSER", "DRON", "REALIDAD VIRTUAL", "INTELIGENCIA ARTIFICIAL",
+
+    // Deportes y Actividades
+    "FÚTBOL", "BALONCESTO", "TENIS", "BÉISBOL", "VOLEIBOL", "NATACIÓN",
+    "ATLETISMO", "CICLISMO", "BOXEO", "KARATE", "YOGA", "BAILE", "CANTO",
+    "PINTURA", "ESCULTURA", "FOTOGRAFÍA", "COCINA", "JARDINERÍA", "PESCA",
+
+    // Espacio y Tiempo
+    "PORTAL", "DIMENSIÓN", "UNIVERSO", "INFINITO", "ETERNIDAD", "MOMENTO",
+    "PASADO", "PRESENTE", "FUTURO", "DESTINO", "TIEMPO", "ESPACIO",
+
+    // Clima y Estaciones
+    "PRIMAVERA", "VERANO", "OTOÑO", "INVIERNO", "TORMENTA", "HURACÁN",
+    "VENTISCA", "NIEBLA", "ROCÍO", "ESCARCHA", "GRANIZO", "BRISA",
+
+    // Edificios y Estructuras
+    "PUENTE", "TÚNEL", "RASCACIELOS", "PIRÁMIDE", "ESFINGE", "COLISEO",
+    "FARO", "MOLINO", "ACUEDUCTO", "MONUMENTO", "ESTATUA", "OBELISCO"
+];
+
+module.exports = words;

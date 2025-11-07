@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPOSTOR - El Juego</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Screen 0: Name Entry -->
+        <div id="nameEntryScreen" class="screen active">
+            <h1>IMPOSTOR</h1>
+            <p class="subtitle">El juego del engaño</p>
+
+            <div style="margin: 40px 0;">
+                <label for="playerName" style="display: block; color: #00ffff; font-size: 1.2em; margin-bottom: 15px;">
+                    ¿Cuál es tu nombre?
+                </label>
+                <input type="text" id="playerName" placeholder="Ingresa tu nombre"
+                       style="width: 100%; padding: 15px; font-size: 1.2em; border: 2px solid #00ffff;
+                              background: rgba(0, 255, 255, 0.1); color: #ffffff; border-radius: 10px;
+                              text-align: center;" maxlength="20" minlength="3">
+                <p class="click-hint" style="margin-top: 10px; font-size: 0.85em; color: #888;">
+                    Mínimo 3 caracteres. Tu nombre debe ser único.
+                </p>
+            </div>
+
+            <div style="margin: 30px 0;">
+                <label style="display: block; color: #00ffff; font-size: 1.2em; margin-bottom: 15px;">
+                    Elige tu avatar
+                </label>
+
+                <div style="margin-bottom: 15px;">
+                    <div id="selectedAvatarDisplay" style="font-size: 4em; text-align: center; margin: 10px 0; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                        <!-- Selected avatar will appear here -->
+                    </div>
+                    <p id="selectedAvatarName" style="text-align: center; color: #00ffff; font-size: 1em; margin: 5px 0;"></p>
+                </div>
+
+                <button onclick="toggleAvatarSelector()" class="ready-btn" style="margin-bottom: 15px; padding: 10px 20px; font-size: 0.9em;">
+                    🎭 Cambiar Avatar
+                </button>
+
+                <div id="avatarSelector" style="display: none; max-height: 300px; overflow-y: auto; border: 2px solid #00ffff; border-radius: 10px; padding: 15px; background: rgba(0, 255, 255, 0.05);">
+                    <div id="avatarGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px;">
+                        <!-- Avatars will be populated here -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <label for="customPhoto" style="display: block; color: #888; font-size: 0.9em; margin-bottom: 8px;">
+                        O sube una foto personalizada (opcional)
+                    </label>
+                    <input type="file" id="customPhoto" accept="image/*"
+                           style="display: block; width: 100%; padding: 10px; font-size: 0.9em;
+                                  border: 1px solid #00ffff; background: rgba(0, 255, 255, 0.05);
+                                  color: #ffffff; border-radius: 5px;">
+                </div>
+            </div>
+
+            <button onclick="submitName()" id="submitNameBtn" class="ready-btn">CONTINUAR</button>
+            <p class="click-hint">Tu nombre y avatar se guardarán en tu dispositivo</p>
+        </div>
+
+        <!-- Screen 1: Lobby (Waiting for players) -->
+        <div id="lobbyScreen" class="screen">
+            <h1>IMPOSTOR</h1>
+            <p class="subtitle">El juego del engaño</p>
+
+            <div class="player-counter">
+                <span id="connectionStatus">Conectando...</span>
+            </div>
+
+            <div class="player-counter">
+                Jugadores conectados: <span id="lobbyPlayerCount">0</span>
+            </div>
+
+            <div id="readyList" class="ready-list"></div>
+
+            <button onclick="toggleReady()" id="readyBtn" class="ready-btn">LISTO? (0/0)</button>
+            <p class="click-hint" id="minPlayersWarning" style="display: none; color: #ff0080;">⚠️ Mínimo 3 jugadores para comenzar</p>
+            <p class="click-hint">El juego inicia cuando todos estén listos</p>
+            <p class="click-hint" style="margin-top: 10px; color: #00ffff;">⚙️ El admin puede configurar la palabra y modo desde el Dashboard</p>
+        </div>
+
+        <!-- Screen 2: Game Play -->
+        <div id="gameScreen" class="screen">
+            <h1>IMPOSTOR</h1>
+
+            <div class="player-counter">
+                Eres el jugador <span id="yourPlayerNumber">-</span> de <span id="totalPlayers">-</span>
+            </div>
+
+            <div class="reveal-card hidden" id="revealCard" onclick="revealWord()">
+                <div class="card-icon">🎭</div>
+                <div class="click-hint">Toca para revelar tu rol</div>
+            </div>
+
+            <div id="waitingMessage" style="display: none;">
+                <p class="click-hint">Esperando a que todos revelen...</p>
+            </div>
+
+        </div>
+
+        <!-- Screen 3: Discussion -->
+        <div id="discussionScreen" class="screen">
+            <h1>¡A DISCUTIR!</h1>
+            <p class="subtitle">¿Quién es el impostor?</p>
+
+            <div class="player-counter">
+                Todos han revelado sus roles
+            </div>
+
+            <div class="reveal-card" style="cursor: default;">
+                <div class="card-icon">🗣️</div>
+                <p style="color: #00ffff; font-size: 1.2em; margin: 15px 0;">
+                    Ahora discutan entre ustedes<br>
+                    y traten de descubrir<br>
+                    quién es el impostor
+                </p>
+                <p style="color: #ffff00; font-size: 0.9em; margin-top: 10px;">
+                    💡 Den pistas sobre la palabra sin decirla directamente
+                </p>
+            </div>
+
+            <button onclick="showRevealOptions()" class="success">REVELAR PALABRA</button>
+
+            <div class="ready-section" style="margin-top: 30px;">
+                <h3 style="color: #00ffff; margin-bottom: 15px;">¿Listos para un nuevo juego?</h3>
+                <div id="discussionResetReadyList" class="ready-list"></div>
+                <button onclick="resetGame()" id="discussionResetBtn" class="ready-btn">¿LISTO PARA NUEVO JUEGO?</button>
+            </div>
+        </div>
+
+        <!-- Screen 4: Reveal Word -->
+        <div id="revealScreen" class="screen">
+            <h1>PALABRA SECRETA</h1>
+            <p class="subtitle">¿Quién adivinó correctamente?</p>
+
+            <div class="reveal-card">
+                <div class="card-icon">✨</div>
+                <div class="card-content" id="revealedWord" style="font-size: 2.5em;">---</div>
+            </div>
+
+            <p style="color: #00ffff; font-size: 1.1em; margin: 20px 0;">
+                ¿El impostor adivinó la palabra?
+            </p>
+
+            <div class="ready-section" style="margin-top: 30px;">
+                <h3 style="color: #00ffff; margin-bottom: 15px;">¿Listos para un nuevo juego?</h3>
+                <div id="resetReadyList" class="ready-list"></div>
+                <button onclick="resetGame()" id="resetBtn" class="ready-btn">¿LISTO PARA NUEVO JUEGO?</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="avatares.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

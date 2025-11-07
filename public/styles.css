@@ -1,0 +1,400 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+}
+
+/* Container */
+.container {
+    background: rgba(20, 20, 40, 0.9);
+    border: 2px solid #00ffff;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+    padding: 30px 20px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    color: #00ffff;
+    font-size: clamp(2em, 8vw, 3em);
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    letter-spacing: 3px;
+}
+
+.subtitle {
+    color: #ff0080;
+    font-size: clamp(1em, 4vw, 1.2em);
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255, 0, 128, 0.6);
+}
+
+/* Screens */
+.screen {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Input styles */
+.input-group {
+    margin: 20px 0;
+}
+
+label {
+    display: block;
+    color: #00ffff;
+    font-size: clamp(1em, 4vw, 1.2em);
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+input[type="number"],
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    font-size: clamp(1em, 4vw, 1.2em);
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    transition: all 0.3s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    border-color: #ff0080;
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+}
+
+/* Button styles */
+button {
+    background: linear-gradient(135deg, #00ffff, #0080ff);
+    border: none;
+    padding: 15px 30px;
+    font-size: clamp(1em, 4vw, 1.3em);
+    color: #000;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    margin: 8px 5px;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: auto;
+    min-width: 150px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 255, 255, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 255, 255, 0.5);
+}
+
+button.danger {
+    background: linear-gradient(135deg, #ff0080, #ff0040);
+}
+
+button.danger:hover {
+    box-shadow: 0 7px 20px rgba(255, 0, 128, 0.4);
+}
+
+button.success {
+    background: linear-gradient(135deg, #00ff80, #00ff40);
+}
+
+/* Ready check styles */
+.ready-btn {
+    background: linear-gradient(135deg, #444, #666);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.ready-btn.ready {
+    background: linear-gradient(135deg, #00ff80, #00ff40);
+    color: #000;
+    box-shadow: 0 5px 20px rgba(0, 255, 128, 0.4);
+}
+
+.ready-btn:hover {
+    transform: translateY(-2px);
+}
+
+.ready-list {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.player-ready-item {
+    color: #888;
+    font-size: clamp(0.9em, 4vw, 1.1em);
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s;
+}
+
+.player-ready-item.ready {
+    color: #00ff80;
+    background: rgba(0, 255, 128, 0.1);
+    font-weight: bold;
+}
+
+.ready-counter {
+    color: #00ffff;
+    font-size: clamp(1em, 4vw, 1.2em);
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+.ready-section {
+    border-top: 2px solid rgba(0, 255, 255, 0.3);
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+/* Reveal card */
+.reveal-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 3px solid #00ffff;
+    border-radius: 15px;
+    padding: 30px 20px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    touch-action: manipulation;
+}
+
+.reveal-card.hidden {
+    background: linear-gradient(135deg, #1a1a2e, #0f0f1e);
+    cursor: pointer;
+}
+
+.reveal-card.hidden:hover {
+    transform: scale(1.02);
+    border-color: #ff0080;
+}
+
+.reveal-card.hidden:active {
+    transform: scale(0.98);
+}
+
+.card-content {
+    font-size: clamp(1.5em, 6vw, 2em);
+    color: #00ffff;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    word-break: break-word;
+    text-align: center;
+}
+
+.impostor-text {
+    font-size: clamp(1.8em, 7vw, 2.5em);
+    color: #ff0080;
+    text-shadow: 0 0 20px rgba(255, 0, 128, 0.8);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.player-counter {
+    color: #fff;
+    font-size: clamp(1.2em, 5vw, 1.5em);
+    margin: 15px 0;
+    padding: 12px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid #00ffff;
+}
+
+.card-icon {
+    font-size: clamp(2.5em, 10vw, 3em);
+    margin-bottom: 10px;
+}
+
+.click-hint {
+    color: #ffff00;
+    font-size: clamp(0.8em, 3.5vw, 0.9em);
+    margin-top: 10px;
+    animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Mobile Responsive Media Queries */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+
+    h1 {
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        margin-bottom: 15px;
+    }
+
+    .input-group {
+        margin: 15px 0;
+    }
+
+    button {
+        padding: 12px 25px;
+        margin: 6px 3px;
+        min-width: 130px;
+        font-size: 1em;
+    }
+
+    .reveal-card {
+        padding: 25px 15px;
+        min-height: 180px;
+        margin: 15px 0;
+    }
+
+    .player-counter {
+        margin: 10px 0;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding: 15px 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        min-width: 120px;
+        font-size: 0.9em;
+        letter-spacing: 0.5px;
+    }
+
+    .reveal-card {
+        padding: 20px 10px;
+        min-height: 160px;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 15px;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 5px;
+    }
+
+    .subtitle {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .input-group {
+        margin: 10px 0;
+    }
+
+    .reveal-card {
+        min-height: 140px;
+        padding: 20px 15px;
+        margin: 10px 0;
+    }
+
+    button {
+        padding: 10px 25px;
+        margin: 5px 3px;
+    }
+
+    .player-counter {
+        margin: 10px 0;
+        padding: 8px;
+    }
+}
+
+/* Prevent zoom on input focus for iOS */
+@media screen and (max-width: 768px) {
+    input[type="number"],
+    input[type="text"] {
+        font-size: 16px;
+    }
+}
+
+/* Better touch targets */
+@media (hover: none) and (pointer: coarse) {
+    button {
+        min-height: 44px;
+    }
+
+    .reveal-card.hidden {
+        min-height: 220px;
+    }
+}

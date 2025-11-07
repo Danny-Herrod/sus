@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPOSTOR - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            grid-template-rows: auto 1fr;
+            gap: 15px;
+            padding: 15px;
+            height: 100vh;
+            max-height: 100vh;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            margin: 0;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1em;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .qr-card {
+            flex-shrink: 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        .qr-card h2 {
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .qr-code {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .url-display {
+            font-size: 0.75em;
+            font-weight: bold;
+            color: #667eea;
+            padding: 6px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+            word-break: break-all;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-item .icon {
+            font-size: 1.5em;
+            margin-bottom: 3px;
+        }
+
+        .stat-item .value {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin: 3px 0;
+        }
+
+        .stat-item .label {
+            font-size: 0.75em;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .game-status {
+            flex-shrink: 0;
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1em;
+            border: 2px solid #ffff00;
+        }
+
+        .game-status.playing {
+            border-color: #00ff80;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: #00ff80;
+            box-shadow: 0 0 10px #00ff80;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .players-card {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .players-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .players-list {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            align-content: start;
+        }
+
+        .player-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #00ff80;
+            transition: all 0.2s ease;
+            height: fit-content;
+        }
+
+        .player-card.ready {
+            border-left-color: #00ff80;
+            background: rgba(0, 255, 128, 0.15);
+        }
+
+        .player-card.not-ready {
+            border-left-color: #ff0080;
+            background: rgba(255, 0, 128, 0.15);
+        }
+
+        .player-card .name {
+            font-weight: bold;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        .player-card .status {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .history-card {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #00ffff;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .history-item .word {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffff00;
+            margin-bottom: 4px;
+        }
+
+        .history-item .impostor {
+            color: #ff0080;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .history-item .players {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .no-data {
+            text-align: center;
+            opacity: 0.5;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>IMPOSTOR Dashboard</h1>
+            <div class="header-status">
+                <span class="status-indicator"></span>
+                <span id="statusText">Esperando jugadores...</span>
+            </div>
+        </div>
+
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- QR Code -->
+            <div class="card qr-card">
+                <h2>📱 Escanea para Jugar</h2>
+                <div id="qrCode" class="qr-code">
+                    <img id="qrImage" alt="QR Code" style="width: 150px; height: 150px;">
+                </div>
+                <div class="url-display" id="urlDisplay">Cargando...</div>
+            </div>
+
+            <!-- Stats -->
+            <div class="card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="icon">👥</div>
+                        <div class="value" id="totalPlayers">0</div>
+                        <div class="label">Conectados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon">🎯</div>
+                        <div class="value" id="totalGames">0</div>
+                        <div class="label">Partidas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon">⏱️</div>
+                        <div class="value" id="sessionTime">0s</div>
+                        <div class="label">Sesión</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="icon">👹</div>
+                        <div class="value" id="mostImpostor" style="font-size: 1.2em;">N/A</div>
+                        <div class="label">Más Impostor</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Controls -->
+            <div class="card" style="flex: 1;">
+                <h2 style="font-size: 1.3em; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid rgba(255, 255, 255, 0.3);">⚙️ Configuración</h2>
+
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Custom Word -->
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-size: 0.9em; opacity: 0.9;">Palabra Personalizada</label>
+                        <input type="text" id="adminCustomWord" placeholder="Deja vacío para palabra aleatoria"
+                               style="width: 100%; padding: 10px; font-size: 1em; border: 2px solid rgba(255, 255, 255, 0.3);
+                                      background: rgba(255, 255, 255, 0.1); color: #fff; border-radius: 8px;">
+                        <button onclick="updateCustomWord()" style="width: 100%; margin-top: 8px; padding: 10px; background: #00ff80;
+                                color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9em;">
+                            Establecer Palabra
+                        </button>
+                    </div>
+
+                    <!-- Game Mode -->
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-size: 0.9em; opacity: 0.9;">Modo de Juego</label>
+                        <select id="adminGameMode" onchange="updateGameMode()"
+                                style="width: 100%; padding: 10px; font-size: 1em; border: 2px solid rgba(255, 255, 255, 0.3);
+                                       background: rgba(255, 255, 255, 0.1); color: #fff; border-radius: 8px; cursor: pointer;">
+                            <option value="single">Un Impostor</option>
+                            <option value="multiple">Múltiples Impostores (6+ = 2 impostores)</option>
+                        </select>
+                        <p style="margin-top: 8px; font-size: 0.75em; opacity: 0.7; line-height: 1.4;">
+                            🎭 Con múltiples impostores, el juego es más desafiante
+                        </p>
+                    </div>
+
+                    <!-- Current Config Display -->
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px; border-left: 3px solid #ffff00;">
+                        <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 5px;">Configuración Actual:</div>
+                        <div style="font-size: 0.9em;">
+                            <div>📝 Palabra: <span id="currentWord" style="color: #ffff00; font-weight: bold;">Aleatoria</span></div>
+                            <div style="margin-top: 3px;">🎮 Modo: <span id="currentMode" style="color: #00ff80; font-weight: bold;">Un Impostor</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Current Players -->
+            <div class="card players-card">
+                <h2>Jugadores Actuales</h2>
+                <div class="players-list" id="playersList">
+                    <div class="no-data">No hay jugadores</div>
+                </div>
+            </div>
+
+            <!-- Game History -->
+            <div class="card history-card">
+                <h2>Historial de Partidas</h2>
+                <div class="history-list" id="historyList">
+                    <div class="no-data">No hay partidas jugadas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖥️ Dashboard iniciando...');
+
+            // Generate QR Code using API (no external library needed)
+            function generateQR(url) {
+                const qrImage = document.getElementById('qrImage');
+                const urlDisplay = document.getElementById('urlDisplay');
+
+                if (qrImage) {
+                    // Using QR Code API - very reliable
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+                    qrImage.onerror = function() {
+                        // Fallback to another QR API
+                        qrImage.src = `https://quickchart.io/qr?text=${encodeURIComponent(url)}&size=150`;
+                    };
+                    console.log('✅ QR generado correctamente para:', url);
+                }
+
+                if (urlDisplay) {
+                    urlDisplay.textContent = url;
+                }
+            }
+
+            // Get the public URL from server (handles ngrok, etc.)
+            fetch('/api/public-url')
+                .then(res => res.json())
+                .then(data => {
+                    const serverUrl = data.url;
+                    console.log('🌐 URL del servidor:', serverUrl);
+                    generateQR(serverUrl);
+                })
+                .catch(err => {
+                    console.error('❌ Error obteniendo URL:', err);
+                    // Fallback to window.location.origin
+                    const fallbackUrl = window.location.origin;
+                    console.log('🔄 Usando URL de fallback:', fallbackUrl);
+                    generateQR(fallbackUrl);
+                });
+
+            // Connect to server as MONITOR (not a player)
+            const socket = io({
+                query: {
+                    isMonitor: 'true'
+                }
+            });
+
+            console.log('🖥️ Dashboard conectado como monitor');
+
+            // Connection events
+            socket.on('connect', () => {
+                console.log('✅ Conectado al servidor');
+                socket.emit('requestStats');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('❌ Desconectado del servidor');
+            });
+
+            socket.on('connect_error', (error) => {
+                console.error('❌ Error de conexión:', error);
+            });
+
+            // Listen for stats updates
+            socket.on('statsUpdate', (data) => {
+            console.log('📊 Stats update:', data);
+
+            // Update counters
+            document.getElementById('totalPlayers').textContent = data.currentPlayers || 0;
+            document.getElementById('totalGames').textContent = data.totalGames || 0;
+            document.getElementById('sessionTime').textContent = data.sessionTime || '0s';
+
+            // Update most impostor player with truncation for long names
+            const mostImpostor = data.mostImpostor || 'N/A';
+            const mostImpostorEl = document.getElementById('mostImpostor');
+            if (mostImpostor.length > 15) {
+                mostImpostorEl.textContent = mostImpostor.substring(0, 12) + '...';
+                mostImpostorEl.title = mostImpostor; // Show full name on hover
+            } else {
+                mostImpostorEl.textContent = mostImpostor;
+            }
+
+            // Update game status in header
+            const statusText = document.getElementById('statusText');
+
+            if (data.gameInProgress) {
+                statusText.textContent = '🎮 Partida en curso';
+            } else {
+                statusText.textContent = '⏳ Esperando jugadores';
+            }
+
+            // Update players list
+            updatePlayersList(data.players || []);
+
+            // Update history
+            updateHistory(data.history || []);
+        });
+
+            socket.on('updatePlayerCount', (data) => {
+                document.getElementById('totalPlayers').textContent = data.totalPlayers || 0;
+            });
+
+            function updatePlayersList(players) {
+                const container = document.getElementById('playersList');
+
+                if (players.length === 0) {
+                    container.innerHTML = '<div class="no-data">No hay jugadores</div>';
+                    return;
+                }
+
+                container.innerHTML = players.map(player => {
+                    const readyClass = player.ready ? 'ready' : 'not-ready';
+                    const readyText = player.ready ? '✓ Listo' : '○ Esperando';
+                    return `
+                        <div class="player-card ${readyClass}">
+                            <div class="name">${player.name}</div>
+                            <div class="status">${readyText}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            function updateHistory(history) {
+                const container = document.getElementById('historyList');
+
+                if (history.length === 0) {
+                    container.innerHTML = '<div class="no-data">No hay partidas jugadas</div>';
+                    return;
+                }
+
+                // Show last 10 games in reverse order
+                const recentGames = history.slice(-10).reverse();
+
+                container.innerHTML = recentGames.map((game, index) => {
+                    const date = new Date(game.timestamp);
+                    const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+                    return `
+                        <div class="history-item">
+                            <div class="word">${game.word}</div>
+                            <div class="impostor">💀 ${game.impostor}</div>
+                            <div class="players">👥 ${game.playerCount} jugadores - ${timeStr}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Request initial stats immediately
+            setTimeout(() => {
+                socket.emit('requestStats');
+            }, 100);
+
+            // Auto-refresh stats every 3 seconds
+            setInterval(() => {
+                socket.emit('requestStats');
+            }, 3000);
+
+            // Admin functions - make them global
+            window.updateCustomWord = function() {
+                const wordInput = document.getElementById('adminCustomWord');
+                const word = wordInput.value.trim();
+
+                console.log('📝 Actualizando palabra personalizada:', word || 'Aleatoria');
+                socket.emit('updateCustomWord', {
+                    customWord: word
+                });
+
+                // Update display
+                document.getElementById('currentWord').textContent = word || 'Aleatoria';
+
+                // Show feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Actualizado!';
+                btn.style.background = '#00ff80';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#00ff80';
+                }, 2000);
+            };
+
+            window.updateGameMode = function() {
+                const modeSelect = document.getElementById('adminGameMode');
+                const mode = modeSelect.value;
+
+                console.log('🎮 Actualizando modo de juego:', mode);
+                socket.emit('updateGameMode', {
+                    gameMode: mode
+                });
+
+                // Update display
+                const modeText = mode === 'multiple' ? 'Múltiples Impostores' : 'Un Impostor';
+                document.getElementById('currentMode').textContent = modeText;
+            };
+
+            // Listen for game mode updates from server
+            socket.on('gameModeUpdated', (data) => {
+                console.log('🔄 Modo de juego actualizado:', data.gameMode);
+                const modeSelect = document.getElementById('adminGameMode');
+                if (modeSelect) {
+                    modeSelect.value = data.gameMode;
+                }
+                const modeText = data.gameMode === 'multiple' ? 'Múltiples Impostores' : 'Un Impostor';
+                document.getElementById('currentMode').textContent = modeText;
+            });
+
+            // Listen for custom word updates from server
+            socket.on('customWordUpdated', (data) => {
+                console.log('📝 Palabra personalizada actualizada:', data.customWord || 'Aleatoria');
+                const wordInput = document.getElementById('adminCustomWord');
+                if (wordInput) {
+                    wordInput.value = data.customWord || '';
+                }
+                document.getElementById('currentWord').textContent = data.customWord || 'Aleatoria';
+            });
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>

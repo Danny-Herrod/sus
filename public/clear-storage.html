@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpiar Storage - IMPOSTOR</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background: #ff0080;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #ff3399;
+        }
+        .info {
+            margin: 20px;
+            padding: 20px;
+            background: rgba(0,255,255,0.1);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧹 Limpiar Datos Guardados</h1>
+
+    <div class="info">
+        <p>Esta herramienta eliminará tu nombre y avatar guardados.</p>
+        <p>Úsala si tienes problemas con los avatares o quieres empezar de nuevo.</p>
+    </div>
+
+    <button onclick="clearStorage()">Limpiar Todo</button>
+    <button onclick="goBack()">Volver al Juego</button>
+
+    <div id="result"></div>
+
+    <script>
+        function clearStorage() {
+            localStorage.removeItem('impostorPlayerName');
+            localStorage.removeItem('impostorAvatarId');
+            localStorage.removeItem('impostorAvatarEmoji');
+
+            document.getElementById('result').innerHTML = `
+                <div class="info" style="background: rgba(0,255,0,0.1); border-color: #00ff00; margin-top: 20px;">
+                    <h2>✓ Datos eliminados correctamente</h2>
+                    <p>Puedes volver al juego ahora.</p>
+                </div>
+            `;
+        }
+
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Mostrar datos actuales
+        window.onload = () => {
+            const name = localStorage.getItem('impostorPlayerName');
+            const avatarId = localStorage.getItem('impostorAvatarId');
+
+            if (name || avatarId) {
+                document.getElementById('result').innerHTML = `
+                    <div class="info" style="margin-top: 20px;">
+                        <h3>Datos actuales:</h3>
+                        <p>Nombre: ${name || 'No guardado'}</p>
+                        <p>Avatar ID: ${avatarId || 'No guardado'}</p>
+                    </div>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <div class="info" style="margin-top: 20px;">
+                        <p>No hay datos guardados</p>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,509 @@
+// Player info
+let myPlayerId = null;
+let myPlayerNumber = null;
+let myPlayerName = null;
+let totalPlayersCount = 0;
+let hasRevealed = false;
+let playersReadyState = [];
+let isReady = false;
+let socketConnected = false;
+
+// Socket.IO connection - only connect after name is set
+let socket = null;
+
+// Check if player has a saved name
+function checkSavedName() {
+    const savedName = localStorage.getItem('impostorPlayerName');
+    if (savedName) {
+        myPlayerName = savedName;
+        document.getElementById('playerName').value = savedName;
+        // Auto-connect with saved name
+        connectToGame();
+    }
+}
+
+// Submit name function
+function submitName() {
+    const nameInput = document.getElementById('playerName').value.trim();
+    if (!nameInput) {
+        alert('Por favor ingresa tu nombre');
+        return;
+    }
+
+    myPlayerName = nameInput;
+    localStorage.setItem('impostorPlayerName', myPlayerName);
+
+    playButtonClick();
+    connectToGame();
+}
+
+// Connect to game server
+function connectToGame() {
+    if (socketConnected) return;
+
+    // Initialize Socket.IO connection
+    socket = io({
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: Infinity,
+        query: {
+            playerName: myPlayerName
+        }
+    });
+
+    socketConnected = true;
+    initializeSocketEvents();
+    showScreen('lobbyScreen');
+}
+
+// Initialize socket event handlers
+function initializeSocketEvents() {
+
+// Audio Context for sound effects
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+// Initialize audio context (needs user interaction first)
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+}
+
+// Sound effect functions
+function playButtonClick() {
+    initAudio();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.1);
+}
+
+function playCardFlip() {
+    initAudio();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15);
+    oscillator.type = 'triangle';
+
+    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.15);
+}
+
+function playImpostorReveal() {
+    initAudio();
+    // Dark, ominous sound
+    const oscillator1 = audioCtx.createOscillator();
+    const oscillator2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator1.connect(gainNode);
+    oscillator2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator1.frequency.value = 150;
+    oscillator2.frequency.value = 200;
+    oscillator1.type = 'sawtooth';
+    oscillator2.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.4, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+    oscillator1.start(audioCtx.currentTime);
+    oscillator2.start(audioCtx.currentTime);
+    oscillator1.stop(audioCtx.currentTime + 0.5);
+    oscillator2.stop(audioCtx.currentTime + 0.5);
+}
+
+function playWordReveal() {
+    initAudio();
+    // Magical, positive sound
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.2);
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.3);
+}
+
+function playGameStart() {
+    initAudio();
+    // Ascending melody
+    const times = [0, 0.1, 0.2];
+    const frequencies = [400, 500, 700];
+
+    times.forEach((time, index) => {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.frequency.value = frequencies[index];
+        oscillator.type = 'square';
+
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime + time);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + 0.15);
+
+        oscillator.start(audioCtx.currentTime + time);
+        oscillator.stop(audioCtx.currentTime + time + 0.15);
+    });
+}
+
+function playGameEnd() {
+    initAudio();
+    // Victory fanfare
+    const times = [0, 0.15, 0.3, 0.45];
+    const frequencies = [600, 700, 800, 1000];
+
+    times.forEach((time, index) => {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.frequency.value = frequencies[index];
+        oscillator.type = 'sine';
+
+        gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime + time);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + 0.2);
+
+        oscillator.start(audioCtx.currentTime + time);
+        oscillator.stop(audioCtx.currentTime + time + 0.2);
+    });
+}
+
+// Socket event handlers
+socket.on('connect', () => {
+    console.log('Conectado al servidor');
+    document.getElementById('connectionStatus').textContent = '✓ Conectado';
+    document.getElementById('connectionStatus').style.color = '#00ff80';
+});
+
+socket.on('disconnect', (reason) => {
+    console.log('Desconectado del servidor:', reason);
+    document.getElementById('connectionStatus').textContent = '✗ Desconectado - Reconectando...';
+    document.getElementById('connectionStatus').style.color = '#ff0080';
+});
+
+socket.on('reconnect', (attemptNumber) => {
+    console.log('Reconectado al servidor después de', attemptNumber, 'intentos');
+    document.getElementById('connectionStatus').textContent = '✓ Reconectado';
+    document.getElementById('connectionStatus').style.color = '#00ff80';
+});
+
+socket.on('reconnect_error', (error) => {
+    console.error('Error de reconexión:', error);
+});
+
+socket.on('reconnect_failed', () => {
+    console.error('Fallo al reconectar');
+    document.getElementById('connectionStatus').textContent = '✗ Error de conexión';
+    document.getElementById('connectionStatus').style.color = '#ff0080';
+});
+
+socket.on('playerJoined', (data) => {
+    myPlayerId = data.playerId;
+    myPlayerNumber = data.playerNumber;
+    console.log('Eres el jugador #' + myPlayerNumber);
+});
+
+socket.on('updatePlayerCount', (data) => {
+    totalPlayersCount = data.totalPlayers;
+    document.getElementById('lobbyPlayerCount').textContent = totalPlayersCount;
+    updateReadyButton();
+});
+
+socket.on('updateReadyStates', (data) => {
+    playersReadyState = data.readyStates;
+
+    // Find my ready state
+    const myState = playersReadyState.find(p => p.playerId === myPlayerId);
+    if (myState) {
+        isReady = myState.ready;
+    }
+
+    updateReadyDisplay();
+    updateReadyButton();
+});
+
+socket.on('updateResetReadyStates', (data) => {
+    playersReadyState = data.readyStates;
+
+    // Find my ready state
+    const myState = playersReadyState.find(p => p.playerId === myPlayerId);
+    if (myState) {
+        isReady = myState.ready;
+    }
+
+    updateResetReadyDisplay();
+});
+
+socket.on('gameStarted', (data) => {
+    playGameStart();
+    totalPlayersCount = data.totalPlayers;
+
+    document.getElementById('yourPlayerNumber').textContent = myPlayerNumber;
+    document.getElementById('totalPlayers').textContent = totalPlayersCount;
+
+    hasRevealed = false;
+    isReady = false;
+    playersReadyState = [];
+    showScreen('gameScreen');
+    resetRevealCard();
+});
+
+socket.on('roleRevealed', (data) => {
+    console.log('roleRevealed recibido:', data);
+
+    const card = document.getElementById('revealCard');
+    card.className = 'reveal-card';
+    card.onclick = null;
+
+    if (data.isImpostor) {
+        // This player is the impostor
+        console.log('Soy el impostor!');
+        setTimeout(() => playImpostorReveal(), 100);
+        card.innerHTML = `
+            <div class="card-icon">💀</div>
+            <div class="impostor-text">¡TÚ ERES EL<br>IMPOSTOR!</div>
+        `;
+        card.style.borderColor = '#ff0080';
+        card.style.background = 'rgba(255, 0, 128, 0.1)';
+    } else {
+        // Regular player
+        console.log('No soy el impostor, mi palabra:', data.word);
+        setTimeout(() => playWordReveal(), 100);
+        card.innerHTML = `
+            <div class="card-icon">✨</div>
+            <div class="card-content">${data.word}</div>
+        `;
+        card.style.borderColor = '#00ff80';
+        card.style.background = 'rgba(0, 255, 128, 0.1)';
+    }
+
+    hasRevealed = true;
+    document.getElementById('waitingMessage').style.display = 'block';
+});
+
+socket.on('finalWordRevealed', (data) => {
+    console.log('finalWordRevealed recibido:', data);
+    playWordReveal();
+    document.getElementById('revealedWord').textContent = data.word;
+
+    // Reset ready state for new game preparation
+    isReady = false;
+    playersReadyState = [];
+
+    showScreen('revealScreen');
+    // Update reset ready display
+    updateResetReadyDisplay();
+});
+
+socket.on('allRevealed', (data) => {
+    playGameEnd();
+    // Store word for later reveal
+    window.secretWord = data.word;
+
+    // Reset ready state for new game preparation
+    isReady = false;
+    playersReadyState = [];
+
+    setTimeout(() => {
+        showScreen('discussionScreen');
+        // Request initial reset ready states
+        updateResetReadyDisplay();
+    }, 2000);
+});
+
+
+socket.on('gameReset', () => {
+    hasRevealed = false;
+    isReady = false;
+    playersReadyState = [];
+    showScreen('lobbyScreen');
+    resetRevealCard();
+    document.getElementById('customWord').value = '';
+    updateReadyButton();
+});
+
+socket.on('error', (data) => {
+    alert(data.message);
+});
+
+// Game functions
+function toggleReady() {
+    playButtonClick();
+
+    // Send custom word update before toggling ready
+    const customWordInput = document.getElementById('customWord').value.trim();
+    socket.emit('updateCustomWord', {
+        customWord: customWordInput
+    });
+
+    socket.emit('toggleReady');
+}
+
+function startGame() {
+    // This function is now deprecated but kept for compatibility
+    toggleReady();
+}
+
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+}
+
+function resetRevealCard() {
+    const card = document.getElementById('revealCard');
+    card.className = 'reveal-card hidden';
+    card.innerHTML = `
+        <div class="card-icon">🎭</div>
+        <div class="click-hint">Toca para revelar tu rol</div>
+    `;
+    card.onclick = revealWord;
+    document.getElementById('waitingMessage').style.display = 'none';
+}
+
+function revealWord() {
+    if (hasRevealed) return;
+
+    console.log('Revelando palabra...');
+    playCardFlip();
+    socket.emit('revealWord');
+}
+
+function resetGame() {
+    playButtonClick();
+    socket.emit('resetGame');
+}
+
+function showRevealOptions() {
+    console.log('Solicitando revelar palabra final...');
+    playButtonClick();
+    socket.emit('revealWordRequest');
+}
+
+// Update ready button state and text
+function updateReadyButton() {
+    const readyBtn = document.getElementById('readyBtn');
+    if (!readyBtn) return;
+
+    const readyCount = playersReadyState.filter(p => p.ready).length;
+
+    if (isReady) {
+        readyBtn.textContent = `✓ LISTO (${readyCount}/${totalPlayersCount})`;
+        readyBtn.classList.add('ready');
+    } else {
+        readyBtn.textContent = `LISTO? (${readyCount}/${totalPlayersCount})`;
+        readyBtn.classList.remove('ready');
+    }
+
+    // Show warning if not enough players
+    const warningEl = document.getElementById('minPlayersWarning');
+    if (warningEl) {
+        if (totalPlayersCount < 3) {
+            warningEl.style.display = 'block';
+        } else {
+            warningEl.style.display = 'none';
+        }
+    }
+}
+
+// Update ready display list
+function updateReadyDisplay() {
+    const readyListEl = document.getElementById('readyList');
+    if (!readyListEl) return;
+
+    readyListEl.innerHTML = playersReadyState.map(player => {
+        const icon = player.ready ? '✓' : '○';
+        const className = player.ready ? 'ready' : '';
+        const isMe = player.playerId === myPlayerId ? ' (Tú)' : '';
+        return `<div class="player-ready-item ${className}">${icon} Jugador #${player.playerNumber}${isMe}</div>`;
+    }).join('');
+}
+
+// Update reset ready display for both screens
+function updateResetReadyDisplay() {
+    const readyCount = playersReadyState.filter(p => p.ready).length;
+    const playerCount = playersReadyState.length || totalPlayersCount;
+
+    const listHTML = `
+        <div class="ready-counter">Jugadores listos: ${readyCount}/${playerCount}</div>
+        ${playersReadyState.map(player => {
+            const icon = player.ready ? '✓' : '○';
+            const className = player.ready ? 'ready' : '';
+            const isMe = player.playerId === myPlayerId ? ' (Tú)' : '';
+            return `<div class="player-ready-item ${className}">${icon} Jugador #${player.playerNumber}${isMe}</div>`;
+        }).join('')}
+    `;
+
+    // Update discussion screen
+    const discussionResetReadyListEl = document.getElementById('discussionResetReadyList');
+    if (discussionResetReadyListEl) {
+        discussionResetReadyListEl.innerHTML = listHTML;
+    }
+
+    // Update reveal screen
+    const resetReadyListEl = document.getElementById('resetReadyList');
+    if (resetReadyListEl) {
+        resetReadyListEl.innerHTML = listHTML;
+    }
+
+    const buttonText = isReady
+        ? `✓ LISTO PARA NUEVO JUEGO (${readyCount}/${playerCount})`
+        : `¿LISTO PARA NUEVO JUEGO? (${readyCount}/${playerCount})`;
+
+    // Update button text for discussion screen
+    const discussionResetBtn = document.getElementById('discussionResetBtn');
+    if (discussionResetBtn) {
+        discussionResetBtn.textContent = buttonText;
+        if (isReady) {
+            discussionResetBtn.classList.add('ready');
+        } else {
+            discussionResetBtn.classList.remove('ready');
+        }
+    }
+
+    // Update button text for reveal screen
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+        resetBtn.textContent = buttonText;
+        if (isReady) {
+            resetBtn.classList.add('ready');
+        } else {
+            resetBtn.classList.remove('ready');
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "impostor-game",
+  "version": "1.0.0",
+  "description": "Juego multijugador presencial de Impostor con servidor local",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node scripts/start-clean.js",
+    "start-simple": "node src/server.js",
+    "start-public": "node src/start-with-qr.js",
+    "kill-port": "node scripts/kill-port.js"
+  },
+  "keywords": [
+    "impostor",
+    "game",
+    "multiplayer",
+    "socket.io"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "qrcode-terminal": "^0.12.0",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "gradient-string": "^2.0.2",
+    "figlet": "^1.7.0",
+    "cli-spinners": "^2.9.0",
+    "ora": "^5.4.1",
+    "socket.io-client": "^4.6.1"
+  }
+}

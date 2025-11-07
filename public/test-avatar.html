@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Avatares</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #test-results {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0,255,255,0.1);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+        }
+        .avatar-display {
+            font-size: 3em;
+            margin: 10px;
+        }
+        .success {
+            color: #00ff00;
+        }
+        .error {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test de Avatares</h1>
+    <div id="test-results"></div>
+
+    <script src="avatares.js"></script>
+    <script>
+        const resultsDiv = document.getElementById('test-results');
+        let results = '';
+
+        // Test 1: Verificar que defaultAvatars esté cargado
+        if (typeof defaultAvatars !== 'undefined') {
+            results += '<p class="success">✓ defaultAvatars está cargado</p>';
+            results += `<p>Total de avatares: ${defaultAvatars.length}</p>`;
+        } else {
+            results += '<p class="error">✗ defaultAvatars NO está cargado</p>';
+        }
+
+        // Test 2: Mostrar algunos avatares
+        if (typeof defaultAvatars !== 'undefined' && defaultAvatars.length > 0) {
+            results += '<h3>Primeros 5 avatares:</h3>';
+            for (let i = 0; i < Math.min(5, defaultAvatars.length); i++) {
+                results += `<div class="avatar-display">${defaultAvatars[i].emoji} - ${defaultAvatars[i].name}</div>`;
+            }
+        }
+
+        // Test 3: Probar getRandomAvatar
+        if (typeof getRandomAvatar !== 'undefined') {
+            results += '<p class="success">✓ getRandomAvatar está definido</p>';
+            const randomAvatar = getRandomAvatar();
+            results += `<div class="avatar-display">Avatar aleatorio: ${randomAvatar.emoji} - ${randomAvatar.name}</div>`;
+        } else {
+            results += '<p class="error">✗ getRandomAvatar NO está definido</p>';
+        }
+
+        // Test 4: Probar getAvatarById
+        if (typeof getAvatarById !== 'undefined') {
+            results += '<p class="success">✓ getAvatarById está definido</p>';
+            const avatar = getAvatarById('cat');
+            if (avatar) {
+                results += `<div class="avatar-display">Avatar 'cat': ${avatar.emoji} - ${avatar.name}</div>`;
+            }
+        } else {
+            results += '<p class="error">✗ getAvatarById NO está definido</p>';
+        }
+
+        resultsDiv.innerHTML = results;
+    </script>
+</body>
+</html>
