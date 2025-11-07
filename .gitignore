@@ -3,3 +3,6 @@ node_modules/
 .env
 .DS_Store
 test-debug.html
+docs/
+*.md
+!README.md
