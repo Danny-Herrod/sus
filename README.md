@@ -1,201 +1,317 @@
-<div align="center">
+# IMPOSTOR - Juego Multijugador de Deducción Social
 
-# 🚀 IMPOSTOR - The Deception Game
+[![Node.js](https://img.shields.io/badge/Node.js-v14+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-010101?style=flat-square&logo=socket.io)](https://socket.io/)
+[![Express](https://img.shields.io/badge/Express-4.x-000000?style=flat-square&logo=express)](https://expressjs.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-<img src="https://i.imgur.com/vXyQGIS.gif" alt="Among Us Sus" width="200"/>
+## Descripción
 
-[![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
-[![Express](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+**IMPOSTOR** es una aplicación web multijugador en tiempo real diseñada para facilitar partidas presenciales de deducción social. El sistema permite a los jugadores conectarse mediante dispositivos móviles o computadoras para participar en una experiencia de juego interactiva donde deben identificar al impostor entre ellos.
 
-### 🔴 *There is 1 Impostor Among Us* 🔴
+La aplicación está construida con arquitectura cliente-servidor utilizando tecnologías web modernas, con comunicación bidireccional en tiempo real mediante WebSockets.
 
-**A real-time multiplayer game where trust is optional and betrayal is inevitable**
+## Características Técnicas
 
-[🎮 Quick Start](#-quick-start) • [📚 Documentation](#-documentation) • [🛠️ Tech Stack](#%EF%B8%8F-tech-stack) • [🎯 Features](#-features)
+- **Comunicación en Tiempo Real**: Implementación de WebSockets mediante Socket.IO para sincronización instantánea entre clientes
+- **Arquitectura Cliente-Servidor**: Separación clara entre lógica de presentación y lógica de negocio
+- **Acceso Multiplataforma**: Compatible con navegadores modernos en dispositivos móviles y escritorio
+- **Conexión Simplificada**: Generación automática de códigos QR para facilitar el acceso desde dispositivos móviles
+- **Sin Autenticación**: Sistema sin registro que prioriza la rapidez de acceso
+- **Escalabilidad**: Preparado para deployment en servicios cloud (Railway, Render)
 
----
+## Requisitos del Sistema
 
-</div>
+### Prerequisitos
 
-## 📖 About
+- **Node.js**: v14.0.0 o superior
+- **npm**: v6.0.0 o superior (incluido con Node.js)
+- **Navegador**: Versiones actuales de Chrome, Firefox, Safari o Edge
 
-**IMPOSTOR** is a multiplayer in-person game inspired by the popular social deduction game. Players must work together to discover who among them is the impostor before it's too late!
+### Dependencias Principales
 
-<div align="center">
-<img src="https://i.imgur.com/K0KPgis.jpeg" alt="Emergency Meeting" width="300"/>
+```json
+{
+  "express": "^4.18.2",
+  "socket.io": "^4.5.4",
+  "cors": "^2.8.5",
+  "qrcode-terminal": "^0.12.0",
+  "chalk": "^4.1.2",
+  "figlet": "^1.6.0"
+}
+```
 
-*"Red is sus"* - Every crewmate ever
-</div>
+## Instalación
 
-## ✨ Features
-
-- 🎭 **Real-time Multiplayer** - Play with friends using Socket.IO
-- 📱 **Mobile Friendly** - Scan QR code to join from any device
-- 🎨 **Clean UI** - Simple and intuitive interface
-- 🔒 **No Registration** - Jump right into the action
-- 🌐 **Local & Public** - Play on LAN or expose via ngrok
-- ⚡ **Fast Setup** - Get started in under 60 seconds
-
-## 🎯 How to Play
-
-1. **Start the server** and share the QR code or URL
-2. **Players join** from their phones or computers
-3. **Roles are assigned** secretly (Crewmate or Impostor)
-4. **Discuss and vote** to find the impostor!
-5. **Win conditions:**
-   - 👥 Crewmates: Identify and vote out the impostor
-   - 🔪 Impostor: Remain undetected until the end
-
-<div align="center">
-<img src="https://i.imgur.com/3cpzfJz.jpeg" alt="Impostor" width="250"/>
-</div>
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v14 or higher)
-- npm (comes with Node.js)
-
-### Installation
+### Método 1: Instalación Estándar
 
 ```bash
-# Clone the repository
-git clone <your-repo-url>
+# Clonar el repositorio
+git clone <url-del-repositorio>
 cd impostor
 
-# Install dependencies
+# Instalar dependencias
 npm install
 ```
 
-### Run the Game
+### Método 2: Desde el Código Fuente
 
-**Option 1: Local Server** (Same WiFi network)
+```bash
+# Descargar y descomprimir el proyecto
+# Navegar al directorio del proyecto
+cd impostor
+
+# Instalar dependencias
+npm install
+```
+
+## Configuración
+
+### Variables de Entorno
+
+El proyecto soporta las siguientes variables de entorno (opcionales):
+
+```env
+PORT=3000                    # Puerto del servidor (default: 3000)
+NODE_ENV=production          # Ambiente de ejecución
+```
+
+### Configuración de Red
+
+**Servidor Local (LAN)**
+- El servidor se ejecuta por defecto en el puerto 3000
+- Accesible desde la red local mediante la IP de la máquina host
+
+**Servidor Público (Internet)**
+- Requiere configuración de túnel (ngrok) o deployment en servicio cloud
+- Script incluido para facilitar exposición pública
+
+## Uso
+
+### Inicio Rápido
+
+**Opción 1: Servidor Local**
+
+Para jugar en la misma red WiFi:
+
 ```bash
 npm start
 ```
 
-**Option 2: Public Server** (Internet accessible with QR)
+El servidor estará disponible en:
+- Local: `http://localhost:3000`
+- Red: `http://<IP-local>:3000`
+
+**Opción 2: Servidor Público con QR**
+
+Para acceso desde Internet con código QR automático:
+
 ```bash
 npm run start-public
 ```
 
-Or on Windows, double-click: `scripts/start-public.bat`
+En Windows, alternativamente:
+```bash
+scripts\start-public.bat
+```
 
-<div align="center">
-<img src="https://i.imgur.com/whtaTVW.png" alt="Not the impostor" width="200"/>
+### Comandos Disponibles
 
-*When you're actually innocent but everyone votes you anyway*
-</div>
+| Comando | Descripción |
+|---------|-------------|
+| `npm start` | Inicia el servidor en modo local |
+| `npm run start-public` | Inicia el servidor con túnel público y código QR |
+| `npm run kill-port` | Termina procesos en el puerto 3000 |
 
-## 📂 Project Structure
+## Arquitectura del Proyecto
 
 ```
 impostor/
-├── 📁 public/              # Client-side files
-│   ├── index.html          # Main game page
-│   ├── test-debug.html     # Debug/testing page
-│   ├── styles.css          # Game styles
-│   └── script.js           # Client logic
 │
-├── 📁 src/                 # Server-side code
-│   ├── server.js           # Main server with Socket.IO
-│   └── start-with-qr.js    # Server launcher with QR code
+├── public/                      # Recursos del cliente
+│   ├── index.html              # Interfaz principal del juego
+│   ├── test-debug.html         # Herramienta de depuración
+│   ├── styles.css              # Hojas de estilo
+│   └── script.js               # Lógica del cliente y manejo de Socket.IO
 │
-├── 📁 scripts/             # Utility scripts
-│   └── start-public.bat    # Windows quick-start script
+├── src/                        # Código del servidor
+│   ├── server.js               # Servidor Express y configuración de Socket.IO
+│   └── start-with-qr.js        # Inicializador con generación de QR
 │
-├── 📁 config/              # Configuration files
-│   ├── railway.json        # Railway deployment config
-│   └── render.yaml         # Render deployment config
+├── scripts/                    # Scripts auxiliares
+│   └── start-public.bat        # Script de inicio rápido para Windows
 │
-├── 📦 package.json         # Project dependencies
-└── 📋 README.md            # You are here!
+├── config/                     # Archivos de configuración
+│   ├── railway.json            # Configuración para Railway
+│   └── render.yaml             # Configuración para Render
+│
+├── package.json                # Manifest del proyecto y dependencias
+├── package-lock.json           # Lock file de dependencias
+├── .gitignore                  # Archivos excluidos del control de versiones
+└── README.md                   # Documentación del proyecto
 ```
 
-## 🛠️ Tech Stack
+## Stack Tecnológico
 
-<div align="center">
+### Frontend
 
-| Frontend | Backend | Real-time | Utilities |
-|----------|---------|-----------|-----------|
-| HTML5 | Node.js | Socket.IO | QRCode Terminal |
-| CSS3 | Express.js | WebSockets | Chalk |
-| JavaScript (ES6+) | CORS | - | Figlet |
+- **HTML5**: Estructura semántica de la aplicación
+- **CSS3**: Estilos y diseño responsive
+- **JavaScript (ES6+)**: Lógica de la interfaz de usuario
+- **Socket.IO Client**: Comunicación en tiempo real con el servidor
 
-</div>
+### Backend
 
-## 🎮 Available Scripts
+- **Node.js**: Runtime de JavaScript
+- **Express.js**: Framework web minimalista
+- **Socket.IO**: Biblioteca para comunicación WebSocket bidireccional
+- **CORS**: Middleware para Cross-Origin Resource Sharing
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start local server (port 3000) |
-| `npm run start-public` | Start with ngrok and QR code |
-| `npm run kill-port` | Kill process on port 3000 |
+### Utilidades
 
-## 🌐 Deployment
+- **QRCode Terminal**: Generación de códigos QR en consola
+- **Chalk**: Colorización de salidas en terminal
+- **Figlet**: Generación de texto ASCII art
+
+## Deployment
 
 ### Railway
 
+1. Instalar Railway CLI:
 ```bash
-# Deploy to Railway
+npm install -g @railway/cli
+```
+
+2. Iniciar sesión y desplegar:
+```bash
+railway login
+railway init
 railway up
 ```
 
 ### Render
 
-Push to your repository and connect it to Render. The `render.yaml` configuration is already set up!
+1. Conectar el repositorio a Render
+2. El archivo `render.yaml` contiene la configuración necesaria
+3. Render detectará automáticamente la configuración
 
-### Manual Deployment
+### Heroku
 
-Set the following environment variables:
-- `PORT` - Server port (default: 3000)
-- `NODE_ENV` - Environment (production/development)
+```bash
+# Instalar Heroku CLI
+# Iniciar sesión
+heroku login
 
-<div align="center">
-<img src="https://i.imgur.com/NQQsWYQ.jpeg" alt="Ejected" width="250"/>
+# Crear aplicación
+heroku create nombre-app
 
-*That feeling when you get ejected but you were innocent*
-</div>
+# Desplegar
+git push heroku main
+```
 
-## 🤝 Contributing
+### Deployment Manual
 
-Contributions are welcome! Feel free to:
+Para cualquier servicio de hosting que soporte Node.js:
 
-1. 🍴 Fork the project
-2. 🔧 Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. 📤 Push to the branch (`git push origin feature/AmazingFeature`)
-5. 🎉 Open a Pull Request
+1. Configurar la variable de entorno `PORT`
+2. Ejecutar `npm install --production`
+3. Iniciar con `npm start`
 
-## 📝 License
+## Mecánica del Juego
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Flujo de Juego
 
-## 🎯 Roadmap
+1. **Inicio de Sesión**: Los jugadores escanean el código QR o acceden a la URL proporcionada
+2. **Asignación de Roles**: El sistema asigna aleatoriamente el rol de impostor a uno de los participantes
+3. **Fase de Discusión**: Los jugadores interactúan físicamente para identificar comportamientos sospechosos
+4. **Votación**: Los jugadores votan para eliminar al sospechoso
+5. **Victoria**:
+   - Tripulación gana al expulsar al impostor
+   - Impostor gana al permanecer sin ser detectado
 
-- [ ] Add voice chat integration
-- [ ] Implement game rooms/lobbies
-- [ ] Add custom game settings
-- [ ] Create game statistics and leaderboards
-- [ ] Add more roles (Detective, Jester, etc.)
-- [ ] Mobile app version
+### Roles
 
-## ⚠️ Disclaimer
+- **Tripulante**: Debe identificar y votar contra el impostor
+- **Impostor**: Debe evitar ser descubierto mientras simula ser un tripulante
 
-<div align="center">
-<img src="https://i.imgur.com/xzvL93q.jpeg" alt="Sus" width="200"/>
+## Contribución
 
-This is a fan-made project and is not affiliated with InnerSloth LLC or Among Us.
+### Guía de Contribución
 
-**Remember:** Always play fair and have fun! 🎮
+Las contribuciones son bienvenidas. Para contribuir:
+
+1. Fork del repositorio
+2. Crear una rama para la funcionalidad: `git checkout -b feature/nueva-funcionalidad`
+3. Commit de los cambios: `git commit -m 'Añade nueva funcionalidad'`
+4. Push a la rama: `git push origin feature/nueva-funcionalidad`
+5. Abrir un Pull Request
+
+### Estándares de Código
+
+- Utilizar ES6+ para JavaScript
+- Mantener consistencia con el estilo existente
+- Documentar funciones complejas
+- Probar cambios antes de enviar PR
+
+## Roadmap
+
+### Funcionalidades Planificadas
+
+- [ ] Sistema de salas/lobbies múltiples
+- [ ] Configuración personalizable de juego
+- [ ] Estadísticas y registro de partidas
+- [ ] Sistema de roles adicionales (Detective, etc.)
+- [ ] Integración de chat de voz
+- [ ] Panel de administración
+- [ ] API REST para integración externa
+- [ ] Versión móvil nativa
+
+## Seguridad
+
+### Consideraciones de Seguridad
+
+- El proyecto está diseñado para uso en entornos de confianza
+- No almacena datos personales de usuarios
+- No requiere autenticación para simplificar el acceso
+- Para uso en producción, considerar implementar:
+  - Rate limiting
+  - Validación de entrada
+  - Cifrado de comunicaciones (HTTPS)
+
+## Solución de Problemas
+
+### Problemas Comunes
+
+**El servidor no inicia**
+```bash
+# Verificar que el puerto no esté en uso
+npm run kill-port
+# Reintentar
+npm start
+```
+
+**Los clientes no se conectan**
+- Verificar que estén en la misma red (modo local)
+- Revisar configuración del firewall
+- Confirmar que el puerto esté accesible
+
+**Error de módulos no encontrados**
+```bash
+# Reinstalar dependencias
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulte el archivo `LICENSE` para más detalles.
+
+## Contacto y Soporte
+
+Para reportar bugs o solicitar funcionalidades, utilice el sistema de Issues del repositorio.
 
 ---
 
-Made with ❤️ and a lot of sus moments
+**Nota**: Este proyecto es una implementación educativa y no está afiliado con InnerSloth LLC ni con el juego Among Us.
 
-*"If not me, then who?" - Every impostor ever*
-
-</div>
+**Desarrollado con Node.js y Socket.IO**
